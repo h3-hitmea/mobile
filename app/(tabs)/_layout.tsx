@@ -28,10 +28,11 @@ export default function TabLayout() {
 	return (
 		<Tabs>
 			<Tabs.Screen
-				name='index'
+				name='home'
 				options={{
 					...stackOptions,
-					title: 'Home',
+					// href: _.isEmpty(user.id) ? '/auth' : null,
+					title: 'Accueil',
 					tabBarIcon: ({ color }) => (
 						<AntDesign
 							name={ICONS_ANT_DESIGN.HOME}
@@ -51,22 +52,6 @@ export default function TabLayout() {
 					tabBarIcon: ({ color }) => (
 						<AntDesign
 							name={ICONS_ANT_DESIGN.USER}
-							size={22}
-							color={color}
-						/>
-					),
-				}}
-			/>
-
-			<Tabs.Screen
-				name='material'
-				options={{
-					...stackOptions,
-					// href: _.isEmpty(user.id) ? '/auth' : null,
-					title: 'Materiel',
-					tabBarIcon: ({ color }) => (
-						<AntDesign
-							name={ICONS_ANT_DESIGN.APPSTORE_O}
 							size={22}
 							color={color}
 						/>

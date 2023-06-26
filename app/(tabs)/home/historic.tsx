@@ -89,7 +89,7 @@ const Historic = () => {
 				style={{
 					color: Colors.primary,
 				}}
-				href='/material'
+				href='/'
 			>
 				Tous les matériaux
 			</Link>

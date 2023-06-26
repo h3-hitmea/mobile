@@ -43,7 +43,7 @@ const MaterialHome = () => {
 					color: Colors.primary,
 					marginTop: 12,
 				}}
-				href='/material/historic'
+				href='/historic'
 			>
 				Mes products
 			</Link>
