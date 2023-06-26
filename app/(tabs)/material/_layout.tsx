@@ -3,15 +3,16 @@ import { Redirect, Stack, useRouter } from 'expo-router';
 import { stackOptions } from '@config/default';
 import _ from 'lodash';
 
-export default function AuthLayout() {
+export default function MaterialLayout() {
 	return (
 		<Stack>
 			<Stack.Screen
 				name='index'
 				options={{ ...stackOptions }}
 			/>
+
 			<Stack.Screen
-				name='signup'
+				name='historic'
 				options={{ ...stackOptions }}
 			/>
 		</Stack>

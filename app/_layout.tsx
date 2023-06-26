@@ -5,6 +5,7 @@ import { SplashScreen, Stack } from 'expo-router';
 import { NativeBaseProvider } from 'native-base';
 import { useEffect } from 'react';
 import { useColorScheme } from 'react-native';
+import { PaperProvider } from 'react-native-paper';
 
 export {
 	// Catch any errors thrown by the Layout component.
@@ -40,7 +41,7 @@ function RootLayoutNav() {
 	const colorScheme = useColorScheme();
 
 	return (
-		<>
+		<PaperProvider>
 			<NativeBaseProvider>
 				<Stack>
 					<Stack.Screen
@@ -49,6 +50,6 @@ function RootLayoutNav() {
 					/>
 				</Stack>
 			</NativeBaseProvider>
-		</>
+		</PaperProvider>
 	);
 }

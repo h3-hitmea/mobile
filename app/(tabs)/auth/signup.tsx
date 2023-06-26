@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Box, Button, Checkbox, FormControl, HStack, Input, Stack, VStack } from 'native-base';
 import { Link, useRouter } from 'expo-router';
 
-const Login = () => {
+const Signup = () => {
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 	const [remeberMe, setRemeberMe] = useState<boolean | string>(false);
@@ -37,27 +37,13 @@ const Login = () => {
 							onChangeText={(text) => setPassword(text)}
 						/>
 					</Stack>
-					<VStack style={styles.remeberMeWrapper}>
-						<HStack
-							display='flex'
-							alignItems='center'
-							space={1}
-						>
-							<Checkbox
-								value={remeberMe as string}
-								accessibilityLabel='This is a dummy checkbox'
-								onChange={(checked) => setRemeberMe(checked)}
-							/>
-							<FormControl.Label>Remember me</FormControl.Label>
-						</HStack>
-						<Link href='/auth/signup'>Signup</Link>
-					</VStack>
+					<Link href='/auth'>Login</Link>
 					<Stack mt='2'>
 						<Button
 							colorScheme='success'
-							onPress={() => console.log('Logged in')}
+							onPress={() => console.log('Sign up')}
 						>
-							Login
+							Sign up
 						</Button>
 					</Stack>
 				</FormControl>
@@ -66,13 +52,6 @@ const Login = () => {
 	);
 };
 
-const styles = StyleSheet.create({
-	remeberMeWrapper: {
-		display: 'flex',
-		justifyContent: 'space-between',
-		alignItems: 'center',
-		flexDirection: 'row',
-	},
-});
+const styles = StyleSheet.create({});
 
-export default Login;
+export default Signup;

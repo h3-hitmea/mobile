@@ -47,10 +47,26 @@ export default function TabLayout() {
 				options={{
 					...stackOptions,
 					// href: _.isEmpty(user.id) ? '/auth' : null,
-					title: 'Login',
+					title: 'Se connecter',
 					tabBarIcon: ({ color }) => (
 						<AntDesign
 							name={ICONS_ANT_DESIGN.USER}
+							size={22}
+							color={color}
+						/>
+					),
+				}}
+			/>
+
+			<Tabs.Screen
+				name='material'
+				options={{
+					...stackOptions,
+					// href: _.isEmpty(user.id) ? '/auth' : null,
+					title: 'Materiel',
+					tabBarIcon: ({ color }) => (
+						<AntDesign
+							name={ICONS_ANT_DESIGN.APPSTORE_O}
 							size={22}
 							color={color}
 						/>
