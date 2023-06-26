@@ -1,55 +1,62 @@
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { Link, Tabs } from 'expo-router';
-import { Pressable, useColorScheme } from 'react-native';
-
-import Colors from '../../constants/Colors';
+import { Stack } from 'expo-router';
+import { useColorScheme } from 'react-native';
+import { Link, Tabs, usePathname } from 'expo-router';
+import { stackOptions } from '@config/default';
+import { AntDesign, FontAwesome5, Ionicons } from '@expo/vector-icons';
+import { ICONS_ANT_DESIGN, ICONS_FONT_AWESOME, IONICONS } from '@constants/Icons';
 
 /**
  * You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
  */
 function TabBarIcon(props: {
-  name: React.ComponentProps<typeof FontAwesome>['name'];
-  color: string;
+	name: React.ComponentProps<typeof FontAwesome>['name'];
+	color: string;
 }) {
-  return <FontAwesome size={28} style={{ marginBottom: -3 }} {...props} />;
+	return (
+		<FontAwesome
+			size={28}
+			style={{ marginBottom: -3 }}
+			{...props}
+		/>
+	);
 }
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
+	const colorScheme = useColorScheme();
 
-  return (
-    <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-      }}>
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: 'Tab One',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
-          headerRight: () => (
-            <Link href="/modal" asChild>
-              <Pressable>
-                {({ pressed }) => (
-                  <FontAwesome
-                    name="info-circle"
-                    size={25}
-                    color={Colors[colorScheme ?? 'light'].text}
-                    style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
-                  />
-                )}
-              </Pressable>
-            </Link>
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="two"
-        options={{
-          title: 'Tab Two',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
-        }}
-      />
-    </Tabs>
-  );
+	return (
+		<Tabs>
+			<Tabs.Screen
+				name='index'
+				options={{
+					...stackOptions,
+					title: 'Home',
+					tabBarIcon: ({ color }) => (
+						<AntDesign
+							name={ICONS_ANT_DESIGN.HOME}
+							size={20}
+							color={color}
+						/>
+					),
+				}}
+			/>
+
+			<Tabs.Screen
+				name='auth'
+				options={{
+					...stackOptions,
+					// href: _.isEmpty(user.id) ? '/auth' : null,
+					title: 'Login',
+					tabBarIcon: ({ color }) => (
+						<AntDesign
+							name={ICONS_ANT_DESIGN.USER}
+							size={22}
+							color={color}
+						/>
+					),
+				}}
+			/>
+		</Tabs>
+	);
 }
