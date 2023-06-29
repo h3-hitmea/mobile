@@ -1,16 +1,27 @@
 import { StyleSheet, TouchableOpacity } from 'react-native';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Box, Checkbox, Text } from 'native-base';
 import { Link } from 'expo-router';
 import Colors from '@constants/Colors';
+import axios from 'axios';
+import { API_URL } from '@env';
 
 const MaterialHome = () => {
-	const fakeData = [
-		{ id: 1, name: 'Finish list Screen', isChecked: false },
-		{ id: 2, name: 'Buy milk', isChecked: true },
-		{ id: 3, name: 'Go to store', isChecked: true },
-	];
-	const [data, setData] = useState<any[]>(fakeData);
+	let isAuth = false;
+	const [materials, setMaterials] = useState<any[]>([]);
+
+	useEffect(() => {
+		console.log({ API_URL });
+		axios
+			.get(`${API_URL}/v1/material`)
+			.then(({ data }) => {
+				console.log(data);
+				setMaterials(data);
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+	}, []);
 
 	return (
 		<Box
@@ -26,27 +37,18 @@ const MaterialHome = () => {
 				Material Home
 			</Text>
 
-			{fakeData.map((item) => (
-				<Box key={item.id}>
-					<Checkbox
-						isChecked={item.isChecked}
-						colorScheme='green'
-						value='1'
-					>
-						{item.name}
-					</Checkbox>
-				</Box>
-			))}
-
-			<Link
-				style={{
-					color: Colors.primary,
-					marginTop: 12,
-				}}
-				href='/home/historic'
-			>
-				Mes products
-			</Link>
+			{materials.length > 0 &&
+				materials.map((item) => (
+					<Box key={item.id}>
+						<Checkbox
+							isChecked={item.isChecked}
+							colorScheme='green'
+							value={item.id}
+						>
+							{item.name}({item.quantity})
+						</Checkbox>
+					</Box>
+				))}
 		</Box>
 	);
 };

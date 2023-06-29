@@ -6,6 +6,8 @@ import { NativeBaseProvider } from 'native-base';
 import { useEffect } from 'react';
 import { useColorScheme } from 'react-native';
 import { PaperProvider } from 'react-native-paper';
+import { store } from '../store';
+import { Provider } from 'react-redux';
 
 export {
 	// Catch any errors thrown by the Layout component.
@@ -41,15 +43,17 @@ function RootLayoutNav() {
 	const colorScheme = useColorScheme();
 
 	return (
-		<PaperProvider>
-			<NativeBaseProvider>
-				<Stack>
-					<Stack.Screen
-						name='(tabs)'
-						options={stackOptions}
-					/>
-				</Stack>
-			</NativeBaseProvider>
-		</PaperProvider>
+		<Provider store={store}>
+			<PaperProvider>
+				<NativeBaseProvider>
+					<Stack>
+						<Stack.Screen
+							name='(tabs)'
+							options={stackOptions}
+						/>
+					</Stack>
+				</NativeBaseProvider>
+			</PaperProvider>
+		</Provider>
 	);
 }
