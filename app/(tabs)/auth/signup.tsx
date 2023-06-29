@@ -11,6 +11,8 @@ import {
 } from 'react-native';
 import { useEffect, useRef, useState } from 'react';
 import { Camera } from 'expo-camera';
+import axios from 'axios';
+import { API_URL } from '@env';
 
 const Signup = () => {
 	const { width } = useWindowDimensions();
@@ -46,12 +48,26 @@ const Signup = () => {
 		};
 
 		let newPhoto = await cameraRef.current.takePictureAsync(options);
-		console.log(Object.keys(newPhoto));
+		console.log(Object.keys(newPhoto), {
+			uri: newPhoto.uri,
+			base64: newPhoto.base64.slice(0, 30),
+		});
 		setPhoto(newPhoto);
 	};
 
 	const createAccount = async () => {
 		try {
+			console.log({ API_URL });
+			const formData = new FormData();
+			formData.append('email', email);
+			formData.append('photo', savedPhoto.uri);
+
+			const request = await axios.post(`${API_URL}/v1/user`, formData, {
+				headers: {
+					'Content-Type': 'multipart/form-data',
+				},
+			});
+			console.log(request);
 			// const request = await Auth.signup(
 			// 	email,
 			// 	'data:image/jpg;base64,' + savedPhoto.base64
