@@ -13,11 +13,14 @@ import { useEffect, useRef, useState } from 'react';
 import { Camera } from 'expo-camera';
 import axios from 'axios';
 import { API_URL } from '@env';
-
+import jwt_decode from 'jwt-decode';
+import { useDispatch } from 'react-redux';
+import { setUser } from '@features/counter/authSlice';
 const Signup = () => {
 	const router = useRouter();
 	const { width } = useWindowDimensions();
 	const height = Math.round((width * 4) / 3);
+	const dispatch = useDispatch();
 
 	const [email, setEmail] = useState('');
 	const [displayCamera, setDisplayCamera] = useState(false);
@@ -50,10 +53,6 @@ const Signup = () => {
 		};
 
 		let newPhoto = await cameraRef.current.takePictureAsync(options);
-		console.log(Object.keys(newPhoto), {
-			uri: newPhoto.uri,
-			base64: newPhoto.base64.slice(0, 30),
-		});
 		setPhoto(newPhoto);
 	};
 
@@ -80,7 +79,10 @@ const Signup = () => {
 			setIsAuthenticated(true);
 
 			console.log(request.data.token);
-			router.push('/auth');
+			const user = jwt_decode(request.data.token);
+			dispatch(setUser(user));
+			console.log(user);
+			router.push('/');
 		} catch (e) {
 			setIsAuthenticated(false);
 			console.error(e);
