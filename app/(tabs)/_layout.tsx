@@ -28,7 +28,7 @@ export default function TabLayout() {
 	return (
 		<Tabs>
 			<Tabs.Screen
-				name='home'
+				name='index'
 				options={{
 					...stackOptions,
 					// href: _.isEmpty(user.id) ? '/auth' : null,
