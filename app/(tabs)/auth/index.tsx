@@ -1,12 +1,121 @@
-import { StyleSheet, TouchableOpacity } from 'react-native';
-import { useState } from 'react';
 import { Box, Button, Checkbox, FormControl, HStack, Input, Stack, VStack } from 'native-base';
 import { Link, useRouter } from 'expo-router';
+import { StatusBar } from 'expo-status-bar';
+import {
+	StyleSheet,
+	Text,
+	View,
+	SafeAreaView,
+	Image,
+	useWindowDimensions,
+} from 'react-native';
+import { useEffect, useRef, useState } from 'react';
+import { Camera } from 'expo-camera';
+import axios from 'axios';
+import { API_URL } from '@env';
 
-const Login = () => {
+const Signup = () => {
+	const router = useRouter();
+	const { width } = useWindowDimensions();
+	const height = Math.round((width * 4) / 3);
+
 	const [email, setEmail] = useState('');
-	const [password, setPassword] = useState('');
-	const [remeberMe, setRemeberMe] = useState<boolean | string>(false);
+	const [displayCamera, setDisplayCamera] = useState(false);
+
+	let cameraRef = useRef();
+	const [hasCameraPermission, setHasCameraPermission] = useState();
+	const [photo, setPhoto] = useState();
+	const [savedPhoto, setSavedPhoto] = useState<string>('');
+	const [isFormSubmitted, setIsFormSubmitted] = useState(false);
+	const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+	useEffect(() => {
+		(async () => {
+			const cameraPermission = (await Camera.requestCameraPermissionsAsync()) as any;
+			setHasCameraPermission(cameraPermission.status === 'granted');
+		})();
+	}, []);
+
+	if (hasCameraPermission === undefined) {
+		return <Text>Requesting permissions...</Text>;
+	} else if (!hasCameraPermission) {
+		return <Text>Permission for camera not granted. Please change this in settings.</Text>;
+	}
+
+	let takePic = async () => {
+		let options = {
+			quality: 1,
+			base64: true,
+			exif: false,
+		};
+
+		let newPhoto = await cameraRef.current.takePictureAsync(options);
+		console.log(Object.keys(newPhoto), {
+			uri: newPhoto.uri,
+			base64: newPhoto.base64.slice(0, 30),
+		});
+		setPhoto(newPhoto);
+	};
+
+	const login = async () => {
+		try {
+			const formData = new FormData();
+
+			console.log(savedPhoto.uri);
+			const photoFormData = {
+				uri: savedPhoto.uri,
+				type: 'image/jpeg',
+				name: 'photo.jpg',
+			};
+			formData.append('email', email);
+			formData.append('photo', photoFormData);
+			formData.append('authFromTelephone', 'true');
+
+			const request = await axios.post(`${API_URL}/v1/auth/login`, formData, {
+				headers: {
+					'Content-Type': 'multipart/form-data',
+				},
+			});
+			setIsFormSubmitted(true);
+			setIsAuthenticated(true);
+
+			console.log(request.data.token);
+			router.push('/auth');
+		} catch (e) {
+			setIsAuthenticated(false);
+			console.error(e);
+		}
+	};
+
+	if (photo) {
+		// let sharePic = () => {
+		// 	shareAsync(photo.uri).then(() => {
+		// 		setPhoto(undefined);
+		// 	});
+		// };
+		const discardHandler = () => {
+			setPhoto(undefined);
+			setDisplayCamera(false);
+		};
+
+		const savecHandler = () => {
+			setPhoto(undefined);
+			setSavedPhoto(photo);
+			setDisplayCamera(false);
+		};
+
+		return (
+			<SafeAreaView style={styles.previewContainer}>
+				<Image
+					style={styles.preview}
+					source={{ uri: 'data:image/jpg;base64,' + photo.base64 }}
+				/>
+
+				<Button onPress={() => discardHandler()}>Annuler</Button>
+				<Button onPress={() => savecHandler()}>Garder</Button>
+			</SafeAreaView>
+		);
+	}
 
 	return (
 		<Box
@@ -16,11 +125,24 @@ const Login = () => {
 			justifyContent='center'
 		>
 			{/* <JAlert show={errorHandler.show} status={errorHandler.status} text={errorHandler.text} /> */}
+
 			<HStack w='100%'>
 				<FormControl
 					display='flex'
 					style={{ gap: 10 }}
 				>
+					{isFormSubmitted && (
+						<Stack>
+							{isAuthenticated ? (
+								<Text style={{ color: 'green' }}>Authentifié</Text>
+							) : (
+								<Text style={{ color: 'red' }}>
+									CONCURRENCY_LIMIT_EXCEEDED
+								</Text>
+							)}
+						</Stack>
+					)}
+
 					<Stack>
 						<FormControl.Label>Email</FormControl.Label>
 						<Input
@@ -30,34 +152,41 @@ const Login = () => {
 						/>
 					</Stack>
 					<Stack>
-						<FormControl.Label>Password</FormControl.Label>
-						<Input
-							type='password'
-							defaultValue={password}
-							onChangeText={(text) => setPassword(text)}
-						/>
+						{!displayCamera && (
+							<Button
+								onPress={() => setDisplayCamera(true)}
+								disabled={!email.length}
+							>
+								Ouvrir le camera
+							</Button>
+						)}
+
+						{displayCamera && (
+							<Camera
+								ratio='4:3'
+								style={{
+									...styles.cameraContainer,
+									height: height,
+									width: '100%',
+								}}
+								ref={cameraRef}
+								type={Camera.Constants.Type.front}
+							>
+								<View style={styles.buttonContainer}>
+									<Button onPress={takePic}>Prendre une photo</Button>
+								</View>
+								<StatusBar style='auto' />
+							</Camera>
+						)}
 					</Stack>
-					<VStack style={styles.remeberMeWrapper}>
-						<HStack
-							display='flex'
-							alignItems='center'
-							space={1}
-						>
-							<Checkbox
-								value={remeberMe as string}
-								accessibilityLabel='This is a dummy checkbox'
-								onChange={(checked) => setRemeberMe(checked)}
-							/>
-							<FormControl.Label>Remember me</FormControl.Label>
-						</HStack>
-						<Link href='/auth/signup'>Signup</Link>
-					</VStack>
+					<Link href='/auth/signup'>Créer un compte</Link>
 					<Stack mt='2'>
 						<Button
 							colorScheme='success'
-							onPress={() => console.log('Logged in')}
+							onPress={() => login()}
+							disabled={!email.length && !savedPhoto}
 						>
-							Login
+							Se connecter
 						</Button>
 					</Stack>
 				</FormControl>
@@ -67,12 +196,24 @@ const Login = () => {
 };
 
 const styles = StyleSheet.create({
-	remeberMeWrapper: {
-		display: 'flex',
-		justifyContent: 'space-between',
+	previewContainer: {
+		width: '100%',
+		height: '100%',
 		alignItems: 'center',
-		flexDirection: 'row',
+		justifyContent: 'center',
+	},
+	cameraContainer: {
+		alignItems: 'center',
+		justifyContent: 'center',
+	},
+	buttonContainer: {
+		backgroundColor: '#fff',
+		alignSelf: 'flex-end',
+	},
+	preview: {
+		alignSelf: 'stretch',
+		flex: 1,
 	},
 });
 
-export default Login;
+export default Signup;
