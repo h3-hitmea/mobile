@@ -15,6 +15,7 @@ import axios from 'axios';
 import { API_URL } from '@env';
 
 const Signup = () => {
+	const router = useRouter();
 	const { width } = useWindowDimensions();
 	const height = Math.round((width * 4) / 3);
 
@@ -73,6 +74,8 @@ const Signup = () => {
 					'Content-Type': 'multipart/form-data',
 				},
 			});
+
+			router.push('/auth');
 			console.log(request);
 		} catch (e) {
 			console.error(e);
