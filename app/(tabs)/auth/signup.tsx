@@ -19,7 +19,6 @@ const Signup = () => {
 	const height = Math.round((width * 4) / 3);
 
 	const [email, setEmail] = useState('');
-	const [remeberMe, setRemeberMe] = useState<boolean | string>(false);
 	const [displayCamera, setDisplayCamera] = useState(false);
 
 	let cameraRef = useRef();
@@ -59,8 +58,15 @@ const Signup = () => {
 		try {
 			console.log({ API_URL });
 			const formData = new FormData();
+
+			console.log(savedPhoto.uri);
+			const photoFormData = {
+				uri: savedPhoto.uri,
+				type: 'image/jpeg',
+				name: 'photo.jpg',
+			};
 			formData.append('email', email);
-			formData.append('photo', savedPhoto.uri);
+			formData.append('photo', photoFormData);
 
 			const request = await axios.post(`${API_URL}/v1/user`, formData, {
 				headers: {
@@ -68,40 +74,6 @@ const Signup = () => {
 				},
 			});
 			console.log(request);
-			// const request = await Auth.signup(
-			// 	email,
-			// 	'data:image/jpg;base64,' + savedPhoto.base64
-			// );
-			// console.log(request);
-			// RNFetchBlob.fetch(
-			// 	'POST',
-			// 	'http://www.example.com/upload-form',
-			// 	{
-			// 		Authorization: 'Bearer access-token',
-			// 		otherHeader: 'foo',
-			// 		'Content-Type': 'multipart/form-data',
-			// 	},
-			// 	[
-			// 		// element with property `filename` will be transformed into `file` in form data
-			// 		{
-			// 			name: 'photo',
-			// 			filename: 'avatar.png',
-			// 			data: 'data:image/jpg;base64,' + savedPhoto.base64,
-			// 		},
-			// 		{
-			// 			name: 'data',
-			// 			data: JSON.stringify({
-			// 				email,
-			// 			}),
-			// 		},
-			// 	]
-			// )
-			// 	.then((resp) => {
-			// 		// ...
-			// 	})
-			// 	.catch((err) => {
-			// 		// ...
-			// 	});
 		} catch (e) {
 			console.error(e);
 		}
@@ -192,6 +164,7 @@ const Signup = () => {
 						<Button
 							colorScheme='success'
 							onPress={() => createAccount()}
+							disabled={!email.length && !savedPhoto}
 						>
 							Créer un compte
 						</Button>
