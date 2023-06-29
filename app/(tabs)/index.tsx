@@ -5,13 +5,15 @@ import { Link } from 'expo-router';
 import Colors from '@constants/Colors';
 import axios from 'axios';
 import { API_URL } from '@env';
+import { useSelector } from 'react-redux';
 
 const MaterialHome = () => {
 	let isAuth = false;
 	const [materials, setMaterials] = useState<any[]>([]);
+	const user = useSelector((state: any) => state.user.user);
+	console.log(user);
 
 	useEffect(() => {
-		console.log({ API_URL });
 		axios
 			.get(`${API_URL}/v1/material`)
 			.then(({ data }) => {

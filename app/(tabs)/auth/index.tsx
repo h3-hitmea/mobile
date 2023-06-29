@@ -81,7 +81,6 @@ const Signup = () => {
 			console.log(request.data.token);
 			const user = jwt_decode(request.data.token);
 			dispatch(setUser(user));
-			console.log(user);
 			router.push('/');
 		} catch (e) {
 			setIsAuthenticated(false);

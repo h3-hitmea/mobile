@@ -5,6 +5,8 @@ import { Link, Tabs, usePathname } from 'expo-router';
 import { stackOptions } from '@config/default';
 import { AntDesign, FontAwesome5, Ionicons } from '@expo/vector-icons';
 import { ICONS_ANT_DESIGN, ICONS_FONT_AWESOME, IONICONS } from '@constants/Icons';
+import { useSelector } from 'react-redux';
+import _ from 'lodash';
 
 /**
  * You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
@@ -24,6 +26,7 @@ function TabBarIcon(props: {
 
 export default function TabLayout() {
 	const colorScheme = useColorScheme();
+	const user = useSelector((state: any) => state.user.user);
 
 	return (
 		<Tabs>
@@ -47,7 +50,7 @@ export default function TabLayout() {
 				name='auth'
 				options={{
 					...stackOptions,
-					// href: _.isEmpty(user.id) ? '/auth' : null,
+					href: _.isEmpty(user.id) ? '/auth' : null,
 					title: 'Se connecter',
 					tabBarIcon: ({ color }) => (
 						<AntDesign
