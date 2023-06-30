@@ -16,8 +16,11 @@ import { API_URL } from '@env';
 import jwt_decode from 'jwt-decode';
 import { useDispatch } from 'react-redux';
 import { setUser } from '@features/counter/authSlice';
+import { usePathname } from 'expo-router';
+
 const Signup = () => {
 	const router = useRouter();
+	const pathname = usePathname();
 	const { width } = useWindowDimensions();
 	const height = Math.round((width * 4) / 3);
 	const dispatch = useDispatch();
@@ -33,6 +36,7 @@ const Signup = () => {
 	const [isAuthenticated, setIsAuthenticated] = useState(false);
 
 	useEffect(() => {
+		console.log(pathname);
 		(async () => {
 			const cameraPermission = (await Camera.requestCameraPermissionsAsync()) as any;
 			setHasCameraPermission(cameraPermission.status === 'granted');
@@ -60,7 +64,6 @@ const Signup = () => {
 		try {
 			const formData = new FormData();
 
-			console.log(savedPhoto.uri);
 			const photoFormData = {
 				uri: savedPhoto.uri,
 				type: 'image/jpeg',
@@ -80,7 +83,7 @@ const Signup = () => {
 
 			console.log(request.data.token);
 			const user = jwt_decode(request.data.token);
-			dispatch(setUser(user));
+			dispatch(setUser({ ...user, token: request.data.token }));
 			router.push('/');
 		} catch (e) {
 			setIsAuthenticated(false);

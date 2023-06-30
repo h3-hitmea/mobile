@@ -7,6 +7,7 @@ import { AntDesign, FontAwesome5, Ionicons } from '@expo/vector-icons';
 import { ICONS_ANT_DESIGN, ICONS_FONT_AWESOME, IONICONS } from '@constants/Icons';
 import { useSelector } from 'react-redux';
 import _ from 'lodash';
+import { useEffect, useState } from 'react';
 
 /**
  * You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
@@ -46,21 +47,38 @@ export default function TabLayout() {
 				}}
 			/>
 
-			<Tabs.Screen
-				name='auth'
-				options={{
-					...stackOptions,
-					href: _.isEmpty(user.id) ? '/auth' : null,
-					title: 'Se connecter',
-					tabBarIcon: ({ color }) => (
-						<AntDesign
-							name={ICONS_ANT_DESIGN.USER}
-							size={22}
-							color={color}
-						/>
-					),
-				}}
-			/>
+			{_.isEmpty(user) ? (
+				<Tabs.Screen
+					name='auth'
+					options={{
+						...stackOptions,
+						title: 'Se connecter',
+						tabBarIcon: ({ color }) => (
+							<AntDesign
+								name={ICONS_ANT_DESIGN.USER}
+								size={22}
+								color={color}
+							/>
+						),
+					}}
+				/>
+			) : (
+				<Tabs.Screen
+					name='auth'
+					options={{
+						...stackOptions,
+						href: null,
+						title: 'Se connecter',
+						tabBarIcon: ({ color }) => (
+							<AntDesign
+								name={ICONS_ANT_DESIGN.USER}
+								size={22}
+								color={color}
+							/>
+						),
+					}}
+				/>
+			)}
 		</Tabs>
 	);
 }
